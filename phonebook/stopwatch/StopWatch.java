@@ -29,16 +29,22 @@ public class StopWatch {
         elapsedTime = Duration.ZERO;
     }
 
-    public long getElapsedMinutes() {
+    public long getInstantMinutes() {
+        return Duration.between(start, Instant.now()).toMinutesPart();
+    }
+
+    public long getElapsedMinutesPart() {
         return elapsedTime.toMinutesPart();
     }
 
-    public long getElapsedSeconds() {
+    public long getElapsedSecondsPart() {
         return elapsedTime.toSecondsPart();
     }
 
-    public long getElapsedMilliSeconds() {
+    public long getElapsedMilliSecondsPart() {
         return elapsedTime.toMillisPart();
     }
+
+    public long getElapsedMilliSeconds() { return elapsedTime.toMillis();}
 
 }
