@@ -2,6 +2,8 @@ package phonebook.stopwatch;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
+import java.util.Optional;
 
 public class StopWatch {
     private Instant start = null;
@@ -28,37 +30,29 @@ public class StopWatch {
         end = null;
         elapsedTime = Duration.ZERO;
     }
-
-    public long getInstantMilliSeconds() {
-        return Duration.between(start, Instant.now()).toMillis();
-    }
-
-    public long getInstantMinutesPart() {
-        return Duration.between(start, Instant.now()).toMinutesPart();
-    }
-
-    public long getInstantSecondsPart() {
-        return Duration.between(start, Instant.now()).toSecondsPart();
-    }
-
-    public long getInstantMillisPart() {
-        return Duration.between(start, Instant.now()).toMillisPart();
-    }
-
     public long getElapsedMinutesPart() {
-        return elapsedTime.toMinutesPart();
+        return getElapsedTime().toMinutesPart();
     }
 
     public long getElapsedSecondsPart() {
-        return elapsedTime.toSecondsPart();
+        return getElapsedTime().toSecondsPart();
     }
 
     public long getElapsedMilliSecondsPart() {
 
-        return elapsedTime.toMillisPart();
+        return getElapsedTime().toMillisPart();
     }
 
     public long getElapsedMilliSeconds() {
-        return elapsedTime.toMillis();}
+        return getElapsedTime().toMillis();}
 
+    public String getElapsedFormattedTime() {
+        return String.format("%d min. %d sec. %d ms.", getElapsedMinutesPart(), getElapsedSecondsPart(), getElapsedMilliSecondsPart());
+    }
+
+    private Duration getElapsedTime() {
+        return elapsedTime == Duration.ZERO && Objects.nonNull(start) ?
+                Duration.between(start, Instant.now()) :
+                elapsedTime;
+    }
 }

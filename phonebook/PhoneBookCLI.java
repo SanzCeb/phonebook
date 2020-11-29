@@ -21,7 +21,7 @@ public class PhoneBookCLI {
 
     public static void run() {
         var stopWatch = runLinearSearch();
-        runBubbleSortWithLinearSearch(stopWatch.getElapsedMilliSeconds());
+        runBubbleSortWithLinearSearch(stopWatch.getElapsedMilliSeconds() * 10);
     }
 
     private static void runBubbleSortWithLinearSearch(long elapsedMinutes) {
@@ -35,15 +35,7 @@ public class PhoneBookCLI {
         stopWatch.start();
         try {
             PHONE_BOOK.sort();
-            var elapsedMinutesPart = stopWatch.getInstantMinutesPart();
-            var elapsedSeconds = stopWatch.getInstantSecondsPart();
-            var elapsedMillis = stopWatch.getInstantMillisPart();
-            var format = "Sorting time: %d min. %d sec. %d ms.";
-            sortTimeMessage = String.format(
-                    format,
-                    elapsedMinutesPart,
-                    elapsedSeconds,
-                    elapsedMillis);
+            sortTimeMessage = String.format("Sorting time: %s", stopWatch.getElapsedFormattedTime());
         } catch (TimeLimitExceededException exception) {
             sortTimeMessage = String.format("%s, moved to linear search", exception.getMessage());
             PHONE_BOOK.setStrategy(new LinearSearchStrategy<>());
@@ -52,38 +44,25 @@ public class PhoneBookCLI {
             searchStopWatch.start();
             foundRecordsCount = runSearch();
             searchStopWatch.stop();
-            var format = "Searching time: %d min. %d sec. %d ms.";
-            searchTimeMessage = String.format(
-                    format,
-                    searchStopWatch.getElapsedMinutesPart()
-                    , searchStopWatch.getElapsedSecondsPart()
-                    , searchStopWatch.getElapsedMilliSecondsPart());
+            searchTimeMessage = String.format("Searching time: %s", searchStopWatch.getElapsedFormattedTime());
         }
         stopWatch.stop();
-        System.out.printf("Found %d / %d entries. Time taken: %d min. %d sec. %d ms.%n",
-                foundRecordsCount,
-                SEARCH_RECORDS.size()
-                , stopWatch.getElapsedMinutesPart()
-                , stopWatch.getElapsedSecondsPart()
-                , stopWatch.getElapsedMilliSecondsPart());
+        System.out.printf("Found %d / %d entries. Time taken: %s%n", foundRecordsCount,
+                SEARCH_RECORDS.size(), stopWatch.getElapsedFormattedTime());
         System.out.println(sortTimeMessage);
         System.out.println(searchTimeMessage);
     }
 
-    public static StopWatch runLinearSearch() {
+    private static StopWatch runLinearSearch() {
         var stopWatch = new StopWatch();
         System.out.println("Start searching... (linear search)");
         stopWatch.start();
-
         PHONE_BOOK.setStrategy(new LinearSearchStrategy<>());
         var foundRecordsCount = runSearch();
         stopWatch.stop();
         System.out.printf("Found %d / %d entries.%n",
                 foundRecordsCount, SEARCH_RECORDS.size());
-        var minutes = stopWatch.getElapsedMinutesPart();
-        var seconds = stopWatch.getElapsedSecondsPart();
-        var milliseconds = stopWatch.getElapsedMilliSecondsPart();
-        System.out.printf("Time taken: %d min. %d sec. %d ms.%n", minutes, seconds, milliseconds);
+        System.out.printf("Time taken: %s%n", stopWatch.getElapsedFormattedTime());
         return stopWatch;
     }
 
