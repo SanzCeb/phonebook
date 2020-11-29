@@ -1,6 +1,6 @@
 package phonebook;
 
-public class PersonRecord {
+public class PersonRecord implements Comparable<PersonRecord> {
     final String name;
     final String lastName;
 
@@ -28,5 +28,16 @@ public class PersonRecord {
         }
 
         return false;
+    }
+
+
+    @Override
+    public int compareTo(PersonRecord personRecord) {
+        var comparison = name.compareToIgnoreCase(personRecord.name);
+
+        if (comparison == 0) {
+            comparison += lastName.compareToIgnoreCase(personRecord.lastName);
+        }
+        return comparison;
     }
 }

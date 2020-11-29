@@ -1,6 +1,6 @@
 package phonebook;
 
-public class PhoneRecord {
+public class PhoneRecord implements Comparable<PhoneRecord>{
     private final PersonRecord personRecord;
     String phone;
 
@@ -30,14 +30,14 @@ public class PhoneRecord {
 
         if (obj instanceof PhoneRecord) {
             PhoneRecord phoneR = (PhoneRecord) obj;
-            return  this.personRecord.equals(phoneR.personRecord) &&
-                    phone.equals(phoneR.phone);
+            return  this.personRecord.equals(phoneR.personRecord);
         }
 
         return false;
     }
 
-    public boolean matchPerson(PersonRecord personRecord) {
-        return this.personRecord.equals(personRecord);
+    @Override
+    public int compareTo(PhoneRecord o) {
+        return personRecord.compareTo(o.personRecord);
     }
 }

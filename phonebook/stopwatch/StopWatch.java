@@ -2,6 +2,8 @@ package phonebook.stopwatch;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
+import java.util.Optional;
 
 public class StopWatch {
     private Instant start = null;
@@ -28,17 +30,29 @@ public class StopWatch {
         end = null;
         elapsedTime = Duration.ZERO;
     }
-
-    public long getElapsedMinutes() {
-        return elapsedTime.toMinutesPart();
+    public long getElapsedMinutesPart() {
+        return getElapsedTime().toMinutesPart();
     }
 
-    public long getElapsedSeconds() {
-        return elapsedTime.toSecondsPart();
+    public long getElapsedSecondsPart() {
+        return getElapsedTime().toSecondsPart();
+    }
+
+    public long getElapsedMilliSecondsPart() {
+
+        return getElapsedTime().toMillisPart();
     }
 
     public long getElapsedMilliSeconds() {
-        return elapsedTime.toMillisPart();
+        return getElapsedTime().toMillis();}
+
+    public String getElapsedFormattedTime() {
+        return String.format("%d min. %d sec. %d ms.", getElapsedMinutesPart(), getElapsedSecondsPart(), getElapsedMilliSecondsPart());
     }
 
+    private Duration getElapsedTime() {
+        return elapsedTime == Duration.ZERO && Objects.nonNull(start) ?
+                Duration.between(start, Instant.now()) :
+                elapsedTime;
+    }
 }
