@@ -29,8 +29,20 @@ public class StopWatch {
         elapsedTime = Duration.ZERO;
     }
 
-    public long getInstantMinutes() {
+    public long getInstantMilliSeconds() {
+        return Duration.between(start, Instant.now()).toMillis();
+    }
+
+    public long getInstantMinutesPart() {
         return Duration.between(start, Instant.now()).toMinutesPart();
+    }
+
+    public long getInstantSecondsPart() {
+        return Duration.between(start, Instant.now()).toSecondsPart();
+    }
+
+    public long getInstantMillisPart() {
+        return Duration.between(start, Instant.now()).toMillisPart();
     }
 
     public long getElapsedMinutesPart() {
@@ -42,9 +54,11 @@ public class StopWatch {
     }
 
     public long getElapsedMilliSecondsPart() {
+
         return elapsedTime.toMillisPart();
     }
 
-    public long getElapsedMilliSeconds() { return elapsedTime.toMillis();}
+    public long getElapsedMilliSeconds() {
+        return elapsedTime.toMillis();}
 
 }

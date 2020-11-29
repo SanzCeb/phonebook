@@ -30,8 +30,7 @@ public class PhoneRecord implements Comparable<PhoneRecord>{
 
         if (obj instanceof PhoneRecord) {
             PhoneRecord phoneR = (PhoneRecord) obj;
-            return  this.personRecord.equals(phoneR.personRecord) &&
-                    phone.equals(phoneR.phone);
+            return  this.personRecord.equals(phoneR.personRecord);
         }
 
         return false;

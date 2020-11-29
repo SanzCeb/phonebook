@@ -24,7 +24,7 @@ public class BubbleSortStrategy <T extends Comparable<T>> implements SortStrateg
                 if (currentRecord.compareTo(nextRecord) > 0) {
                     currentRecord = records.set(j, nextRecord);
                     records.set(j + 1, currentRecord);
-                    if (stopWatch.getInstantMinutes() >= limit) {
+                    if (stopWatch.getInstantMilliSeconds() >= limit * 10) {
                         throwTimeExceededException(stopWatch);
                     }
                 }
@@ -34,6 +34,7 @@ public class BubbleSortStrategy <T extends Comparable<T>> implements SortStrateg
     }
 
     private void throwTimeExceededException(StopWatch stopWatch) throws TimeLimitExceededException {
+        stopWatch.stop();
         var elapsedMinutes = stopWatch.getElapsedMinutesPart();
         var elapsedSeconds = stopWatch.getElapsedSecondsPart();
         var elapsedMillis = stopWatch.getElapsedMilliSecondsPart();

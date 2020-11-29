@@ -4,7 +4,7 @@ import java.util.List;
 
 public class JumpSearchStrategy<T extends Comparable<T>> implements SearchStrategy<T> {
 
-    public boolean match(List<T> records, T record) {
+    public boolean contains(List<T> records, T record) {
         if (records.isEmpty()) {
             return false;
         }
@@ -36,6 +36,6 @@ public class JumpSearchStrategy<T extends Comparable<T>> implements SearchStrate
             return false;
         }
         var subList = records.subList(leftIndex, rightIndex);
-        return new LinearSearchStrategy<T>().match(subList, record);
+        return new LinearSearchStrategy<T>().contains(subList, record);
     }
 }

@@ -28,7 +28,7 @@ public class PhoneBook {
     }
 
     public boolean personExists(PersonRecord personRecord) {
-        return strategy.match(phoneRecords, new PhoneRecord(personRecord));
+        return strategy.contains(phoneRecords, new PhoneRecord(personRecord));
     }
 
 
