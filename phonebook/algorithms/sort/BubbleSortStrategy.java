@@ -1,11 +1,12 @@
-package phonebook.algorithms;
+package phonebook.algorithms.sort;
 
+import phonebook.algorithms.sort.SortStrategy;
 import phonebook.stopwatch.StopWatch;
 
 import javax.naming.TimeLimitExceededException;
 import java.util.List;
 
-public class BubbleSortStrategy <T extends Comparable<T>> implements SortStrategy<T>{
+public class BubbleSortStrategy <T extends Comparable<T>> implements SortStrategy<T> {
 
     private final long limit;
 
