@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PhoneBook {
-    private final List<PhoneRecord> phoneRecords;
+    public final List<PhoneRecord> phoneRecords;
     private SearchStrategy<PhoneRecord> strategy;
     private SortStrategy<PhoneRecord> sortStrategy;
 
@@ -28,8 +28,9 @@ public class PhoneBook {
         this.sortStrategy.sort(phoneRecords);
     }
 
+
     public boolean personExists(PersonRecord personRecord) {
-        return strategy.contains(phoneRecords, new PhoneRecord(personRecord));
+        return strategy.contains(new PhoneRecord(personRecord));
     }
 
 

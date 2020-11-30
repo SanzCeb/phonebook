@@ -2,9 +2,13 @@ package phonebook.algorithms.search;
 
 import java.util.List;
 
-public class JumpSearchStrategy<T extends Comparable<T>> implements SearchStrategy<T> {
+public class JumpSearchStrategy<T extends Comparable<T>> extends SearchStrategy<T> {
 
-    public boolean contains(List<T> records, T record) {
+    public JumpSearchStrategy(List<T> records) {
+        super(records);
+    }
+
+    public boolean contains(T record) {
         if (records.isEmpty()) {
             return false;
         }
@@ -36,6 +40,6 @@ public class JumpSearchStrategy<T extends Comparable<T>> implements SearchStrate
             return false;
         }
         var subList = records.subList(leftIndex, rightIndex);
-        return new LinearSearchStrategy<T>().contains(subList, record);
+        return new LinearSearchStrategy<T>(subList).contains(record);
     }
 }

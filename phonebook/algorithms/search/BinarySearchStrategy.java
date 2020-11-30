@@ -1,12 +1,14 @@
 package phonebook.algorithms.search;
 
-import phonebook.algorithms.search.SearchStrategy;
-
 import java.util.List;
 
-public class BinarySearchStrategy<T extends Comparable<T>> implements SearchStrategy<T> {
+public class BinarySearchStrategy<T extends Comparable<T>> extends SearchStrategy<T> {
+    public BinarySearchStrategy(List<T> records) {
+        super(records);
+    }
+
     @Override
-    public boolean contains(List<T> records, T record) {
+    public boolean contains(T record) {
         return binarySearch(records, record, 0, records.size()  - 1);
     }
 
