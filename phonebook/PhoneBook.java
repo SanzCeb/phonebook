@@ -1,9 +1,10 @@
 package phonebook;
 
-import phonebook.algorithms.SearchStrategy;
-import phonebook.algorithms.SortStrategy;
+import phonebook.algorithms.search.SearchStrategy;
+import phonebook.algorithms.sort.SortStrategy;
 
 import javax.naming.TimeLimitExceededException;
+import java.util.Collections;
 import java.util.List;
 
 public class PhoneBook {
@@ -15,7 +16,7 @@ public class PhoneBook {
         this.phoneRecords = phoneRecords;
     }
 
-    public void setStrategy(SearchStrategy<PhoneRecord> strategy) {
+    public void setSearchStrategy(SearchStrategy<PhoneRecord> strategy) {
         this.strategy = strategy;
     }
 
@@ -32,4 +33,7 @@ public class PhoneBook {
     }
 
 
+    public void shuffle() {
+        Collections.shuffle(phoneRecords);
+    }
 }

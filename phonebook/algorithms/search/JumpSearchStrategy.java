@@ -1,4 +1,4 @@
-package phonebook.algorithms;
+package phonebook.algorithms.search;
 
 import java.util.List;
 

@@ -1,8 +1,10 @@
 package phonebook;
 
-import phonebook.algorithms.BubbleSortStrategy;
-import phonebook.algorithms.JumpSearchStrategy;
-import phonebook.algorithms.LinearSearchStrategy;
+import phonebook.algorithms.search.BinarySearchStrategy;
+import phonebook.algorithms.search.JumpSearchStrategy;
+import phonebook.algorithms.search.LinearSearchStrategy;
+import phonebook.algorithms.sort.BubbleSortStrategy;
+import phonebook.algorithms.sort.QuickSortStrategy;
 import phonebook.stopwatch.StopWatch;
 
 import javax.naming.TimeLimitExceededException;
@@ -22,11 +24,42 @@ public class PhoneBookCLI {
     public static void run() {
         var stopWatch = runLinearSearch();
         runBubbleSortWithLinearSearch(stopWatch.getElapsedMilliSeconds() * 10);
+        PHONE_BOOK.shuffle();
+        runQuickSortWithBinarySearch();
+    }
+
+    private static void runQuickSortWithBinarySearch() {
+        PHONE_BOOK.setSearchStrategy(new BinarySearchStrategy<>());
+        PHONE_BOOK.setSortStrategy(new QuickSortStrategy<>());
+        String sortTimeMessage;
+        String searchTimeMessage;
+        long foundRecordsCount;
+        var stopWatch = new StopWatch();
+        System.out.println("Start searching ... (quick sort + binary search");
+        stopWatch.start();
+        try {
+            PHONE_BOOK.sort();
+            sortTimeMessage = String.format("Sorting time: %s", stopWatch.getElapsedFormattedTime());
+        } catch (TimeLimitExceededException exception) {
+            sortTimeMessage = String.format("%s, moved to linear search", exception.getMessage());
+            PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
+        } finally {
+            var searchStopWatch = new StopWatch();
+            searchStopWatch.start();
+            foundRecordsCount = runSearch();
+            searchStopWatch.stop();
+            searchTimeMessage = String.format("Searching time: %s", searchStopWatch.getElapsedFormattedTime());
+        }
+        stopWatch.stop();
+        System.out.printf("Found %d / %d entries. Time taken: %s%n", foundRecordsCount,
+                SEARCH_RECORDS.size(), stopWatch.getElapsedFormattedTime());
+        System.out.println(sortTimeMessage);
+        System.out.println(searchTimeMessage);
     }
 
     private static void runBubbleSortWithLinearSearch(long elapsedMinutes) {
         PHONE_BOOK.setSortStrategy(new BubbleSortStrategy<>(elapsedMinutes));
-        PHONE_BOOK.setStrategy(new JumpSearchStrategy<>());
+        PHONE_BOOK.setSearchStrategy(new JumpSearchStrategy<>());
         String sortTimeMessage;
         String searchTimeMessage;
         long foundRecordsCount;
@@ -38,7 +71,7 @@ public class PhoneBookCLI {
             sortTimeMessage = String.format("Sorting time: %s", stopWatch.getElapsedFormattedTime());
         } catch (TimeLimitExceededException exception) {
             sortTimeMessage = String.format("%s, moved to linear search", exception.getMessage());
-            PHONE_BOOK.setStrategy(new LinearSearchStrategy<>());
+            PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
         } finally {
             var searchStopWatch = new StopWatch();
             searchStopWatch.start();
@@ -57,7 +90,7 @@ public class PhoneBookCLI {
         var stopWatch = new StopWatch();
         System.out.println("Start searching... (linear search)");
         stopWatch.start();
-        PHONE_BOOK.setStrategy(new LinearSearchStrategy<>());
+        PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
         var foundRecordsCount = runSearch();
         stopWatch.stop();
         System.out.printf("Found %d / %d entries.%n",

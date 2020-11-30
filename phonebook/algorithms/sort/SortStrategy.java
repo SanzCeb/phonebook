@@ -1,4 +1,4 @@
-package phonebook.algorithms;
+package phonebook.algorithms.sort;
 
 import javax.naming.TimeLimitExceededException;
 import java.util.List;
