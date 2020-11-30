@@ -3,8 +3,10 @@ package phonebook;
 import phonebook.algorithms.search.BinarySearchStrategy;
 import phonebook.algorithms.search.JumpSearchStrategy;
 import phonebook.algorithms.search.LinearSearchStrategy;
+import phonebook.algorithms.search.SearchStrategy;
 import phonebook.algorithms.sort.BubbleSortStrategy;
 import phonebook.algorithms.sort.QuickSortStrategy;
+import phonebook.algorithms.sort.SortStrategy;
 import phonebook.stopwatch.StopWatch;
 
 import javax.naming.TimeLimitExceededException;
@@ -15,56 +17,31 @@ public class PhoneBookCLI {
     private final static List<PersonRecord> SEARCH_RECORDS;
 
     static {
-        var dirFile  = "C:\\Users\\scebollero\\IdeaProjects\\Phone Book\\Phone Book\\task\\directory.txt";
-        var findFile = "C:\\Users\\scebollero\\IdeaProjects\\Phone Book\\Phone Book\\task\\find.txt";
+        var dirFile  = ".\\directory.txt";
+        var findFile = ".\\find.txt";
         PHONE_BOOK = new PhoneBook(PhoneBookInput.readPhoneBookRecords(dirFile));
         SEARCH_RECORDS = PhoneBookInput.readPersonRecords(findFile);
     }
 
     public static void run() {
         var stopWatch = runLinearSearch();
-        runBubbleSortWithLinearSearch(stopWatch.getElapsedMilliSeconds() * 10);
-        PHONE_BOOK.shuffle();
-        runQuickSortWithBinarySearch();
-    }
-
-    private static void runQuickSortWithBinarySearch() {
-        PHONE_BOOK.setSearchStrategy(new BinarySearchStrategy<>());
-        PHONE_BOOK.setSortStrategy(new QuickSortStrategy<>());
-        String sortTimeMessage;
-        String searchTimeMessage;
-        long foundRecordsCount;
-        var stopWatch = new StopWatch();
-        System.out.println("Start searching ... (quick sort + binary search");
-        stopWatch.start();
-        try {
-            PHONE_BOOK.sort();
-            sortTimeMessage = String.format("Sorting time: %s", stopWatch.getElapsedFormattedTime());
-        } catch (TimeLimitExceededException exception) {
-            sortTimeMessage = String.format("%s, moved to linear search", exception.getMessage());
-            PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
-        } finally {
-            var searchStopWatch = new StopWatch();
-            searchStopWatch.start();
-            foundRecordsCount = runSearch();
-            searchStopWatch.stop();
-            searchTimeMessage = String.format("Searching time: %s", searchStopWatch.getElapsedFormattedTime());
-        }
-        stopWatch.stop();
-        System.out.printf("Found %d / %d entries. Time taken: %s%n", foundRecordsCount,
-                SEARCH_RECORDS.size(), stopWatch.getElapsedFormattedTime());
-        System.out.println(sortTimeMessage);
-        System.out.println(searchTimeMessage);
-    }
-
-    private static void runBubbleSortWithLinearSearch(long elapsedMinutes) {
-        PHONE_BOOK.setSortStrategy(new BubbleSortStrategy<>(elapsedMinutes));
-        PHONE_BOOK.setSearchStrategy(new JumpSearchStrategy<>());
-        String sortTimeMessage;
-        String searchTimeMessage;
-        long foundRecordsCount;
-        var stopWatch = new StopWatch();
         System.out.println("Start searching... (bubble sort + jump search)");
+        var bubbleSortStrategy = new BubbleSortStrategy<PhoneRecord>(stopWatch.getElapsedMilliSeconds() * 10);
+        trySortAndSearch(bubbleSortStrategy, new JumpSearchStrategy<>());
+
+        PHONE_BOOK.shuffle();
+        System.out.println("Start searching ... (quick sort + binary search)");
+        trySortAndSearch(new QuickSortStrategy<>(), new BinarySearchStrategy<>());
+
+    }
+
+    private static void trySortAndSearch(SortStrategy<PhoneRecord> sortStrategy, SearchStrategy<PhoneRecord> searchStrategy){
+        String sortTimeMessage;
+        String searchTimeMessage;
+        long foundRecordsCount;
+        var stopWatch = new StopWatch();
+        PHONE_BOOK.setSearchStrategy(searchStrategy);
+        PHONE_BOOK.setSortStrategy(sortStrategy);
         stopWatch.start();
         try {
             PHONE_BOOK.sort();
@@ -80,10 +57,11 @@ public class PhoneBookCLI {
             searchTimeMessage = String.format("Searching time: %s", searchStopWatch.getElapsedFormattedTime());
         }
         stopWatch.stop();
-        System.out.printf("Found %d / %d entries. Time taken: %s%n", foundRecordsCount,
+        System.out.printf("Found %d / %d entries.%nTime taken: %s%n", foundRecordsCount,
                 SEARCH_RECORDS.size(), stopWatch.getElapsedFormattedTime());
         System.out.println(sortTimeMessage);
         System.out.println(searchTimeMessage);
+
     }
 
     private static StopWatch runLinearSearch() {

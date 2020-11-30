@@ -21,11 +21,11 @@ public class JumpSearchStrategy<T extends Comparable<T>> implements SearchStrate
             return true;
         }
 
-        var rightIndex = jumpLength;
+        var rightIndex = 0;
         var leftIndex = 0;
         while (rightIndex < recordsSize - 1) {
             rightIndex = Math.min(recordsSize - 1, rightIndex + jumpLength);
-            if (record.compareTo(records.get(rightIndex)) >= 0) {
+            if (records.get(rightIndex).compareTo(record) >= 0) {
                 break;
             }
             leftIndex = rightIndex;
