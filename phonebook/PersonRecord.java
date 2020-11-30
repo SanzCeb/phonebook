@@ -40,4 +40,9 @@ public class PersonRecord implements Comparable<PersonRecord> {
         }
         return comparison;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s %s", name, lastName);
+    }
 }

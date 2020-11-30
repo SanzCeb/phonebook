@@ -1,10 +1,13 @@
 package phonebook;
 
-public class PhoneRecord implements Comparable<PhoneRecord>{
+import phonebook.algorithms.search.hash.TableEntry;
+
+public class PhoneRecord extends TableEntry<PersonRecord, String> implements Comparable<PhoneRecord>{
     private final PersonRecord personRecord;
     String phone;
 
     public PhoneRecord(PersonRecord personRecord, String phone) {
+        super(personRecord, phone);
         this.personRecord = personRecord;
         this.phone = phone;
     }

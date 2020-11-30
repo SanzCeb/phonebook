@@ -1,9 +1,7 @@
 package phonebook;
 
-import phonebook.algorithms.search.BinarySearchStrategy;
-import phonebook.algorithms.search.JumpSearchStrategy;
-import phonebook.algorithms.search.LinearSearchStrategy;
-import phonebook.algorithms.search.SearchStrategy;
+import phonebook.algorithms.search.*;
+import phonebook.algorithms.search.hash.HashTableSearchStrategy;
 import phonebook.algorithms.sort.BubbleSortStrategy;
 import phonebook.algorithms.sort.QuickSortStrategy;
 import phonebook.algorithms.sort.SortStrategy;
@@ -27,12 +25,34 @@ public class PhoneBookCLI {
         var stopWatch = runLinearSearch();
         System.out.println("Start searching... (bubble sort + jump search)");
         var bubbleSortStrategy = new BubbleSortStrategy<PhoneRecord>(stopWatch.getElapsedMilliSeconds() * 10);
-        trySortAndSearch(bubbleSortStrategy, new JumpSearchStrategy<>());
+        trySortAndSearch(bubbleSortStrategy, new JumpSearchStrategy<>(PHONE_BOOK.phoneRecords));
 
         PHONE_BOOK.shuffle();
         System.out.println("Start searching ... (quick sort + binary search)");
-        trySortAndSearch(new QuickSortStrategy<>(), new BinarySearchStrategy<>());
+        trySortAndSearch(new QuickSortStrategy<>(), new BinarySearchStrategy<>(PHONE_BOOK.phoneRecords));
 
+        PHONE_BOOK.shuffle();
+        runHashTableSearch();
+
+
+    }
+
+    private static void runHashTableSearch() {
+        System.out.println("Start searching ... (hash table)");
+        var hashTableWatch = new StopWatch();
+        hashTableWatch.start();
+        PHONE_BOOK.setSearchStrategy(new HashTableSearchStrategy<>(PHONE_BOOK.phoneRecords));
+        var creatingTableMessage = String.format("Creating time: %s", hashTableWatch.getElapsedFormattedTime());
+        var searchStopWatch = new StopWatch();
+        searchStopWatch.start();
+        var foundRecordsCount = runSearch();
+        searchStopWatch.stop();
+        var searchTimeMessage = String.format("Searching time: %s", searchStopWatch.getElapsedFormattedTime());
+        hashTableWatch.stop();
+        System.out.printf("Found %d / %d entries.%nTime taken: %s%n", foundRecordsCount,
+                SEARCH_RECORDS.size(), hashTableWatch.getElapsedFormattedTime());
+        System.out.println(creatingTableMessage);
+        System.out.println(searchTimeMessage);
     }
 
     private static void trySortAndSearch(SortStrategy<PhoneRecord> sortStrategy, SearchStrategy<PhoneRecord> searchStrategy){
@@ -48,7 +68,7 @@ public class PhoneBookCLI {
             sortTimeMessage = String.format("Sorting time: %s", stopWatch.getElapsedFormattedTime());
         } catch (TimeLimitExceededException exception) {
             sortTimeMessage = String.format("%s, moved to linear search", exception.getMessage());
-            PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
+            PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>(PHONE_BOOK.phoneRecords));
         } finally {
             var searchStopWatch = new StopWatch();
             searchStopWatch.start();
@@ -68,7 +88,7 @@ public class PhoneBookCLI {
         var stopWatch = new StopWatch();
         System.out.println("Start searching... (linear search)");
         stopWatch.start();
-        PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>());
+        PHONE_BOOK.setSearchStrategy(new LinearSearchStrategy<>(PHONE_BOOK.phoneRecords));
         var foundRecordsCount = runSearch();
         stopWatch.stop();
         System.out.printf("Found %d / %d entries.%n",
